@@ -1,5 +1,11 @@
-const { redis, otpService } = require("../../lib");
+const { redis, otpService, mongodb, time, customdb, express } = require("../../lib");
 const jwt = require('jsonwebtoken');
+const socket_client = require('socket.io-client')(process.env.healthServerUrl);
+
+
+var md5 = require('md5');
+
+
 
 async function getRedisData(username) {
     return new Promise((resolve, reject) => {
@@ -91,6 +97,7 @@ const errorMessages = {
     '500': "خطای سیستمی",
     '200': ' عملیات با موفقیت انجام شد ',
     '800': "شما بیش از اندازه تلاش کرده اید، بروید استراحت :)",
+    '2111': "درخواست بررسی اکانت با موفقیت ثبت شد",
     // ...
 };
 
@@ -104,7 +111,7 @@ function getErrorMessage(errorCode) {
 }
 
 
-function generateBearerToken(user) {    
+function generateBearerToken(user) {
     const token = jwt.sign(user, process.env.secretKey, {
         expiresIn: process.env.expiresInDays * 24 * 60 * 60
     });
@@ -121,4 +128,9 @@ module.exports = {
     updateRedisData,
     sendOtp,
     delRedisData,
+    mongodb,
+    md5,
+    customdb,
+    socket_client,
+    time
 };
